@@ -61,7 +61,8 @@ public class Lander : MonoBehaviour
         {
             default:
             case State.WaitingToStart:
-                if (Keyboard.current.upArrowKey.isPressed || Keyboard.current.leftArrowKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+                if (GameInput.Instance.IsUpActionPressed() || GameInput.Instance.IsRightActionPressed() || GameInput.Instance.IsLeftActionPressed() || GameInput.Instance.GetMovementInputVector2() != Vector2.zero
+                )
                 {
                     landerRigidbody2D.gravityScale = GRAVITY_NORMAL;
                     SetState(State.Normal);
@@ -73,26 +74,28 @@ public class Lander : MonoBehaviour
                     return;
                 }
 
-                if (Keyboard.current.upArrowKey.isPressed || Keyboard.current.leftArrowKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+                if (GameInput.Instance.IsUpActionPressed() || GameInput.Instance.IsRightActionPressed() || GameInput.Instance.IsLeftActionPressed() || GameInput.Instance.GetMovementInputVector2() != Vector2.zero)
+
                 {
                     ConsumeFuel();
                 }
 
-                if (Keyboard.current.upArrowKey.isPressed)
+                float gamepadDeadzone = .2f;
+                if (GameInput.Instance.IsUpActionPressed() || GameInput.Instance.GetMovementInputVector2().y > gamepadDeadzone)
                 {
                     float force = 700f;
                     landerRigidbody2D.AddForce(force * transform.up * Time.deltaTime);
                     OnUpForce?.Invoke(this, EventArgs.Empty);
                 }
 
-                if (Keyboard.current.leftArrowKey.isPressed)
+                if (GameInput.Instance.IsLeftActionPressed() || GameInput.Instance.GetMovementInputVector2().x < -gamepadDeadzone)
                 {
                     float turnSpeed = +100f;
                     landerRigidbody2D.AddTorque(turnSpeed * Time.deltaTime);
                     OnLeftForce?.Invoke(this, EventArgs.Empty);
                 }
 
-                if (Keyboard.current.rightArrowKey.isPressed)
+                if (GameInput.Instance.IsRightActionPressed() || GameInput.Instance.GetMovementInputVector2().x > gamepadDeadzone)
                 {
                     float turnSpeed = -100f;
                     landerRigidbody2D.AddTorque(turnSpeed * Time.deltaTime);
@@ -104,10 +107,16 @@ public class Lander : MonoBehaviour
         }
 
     }
+
     private void OnCollisionEnter2D(Collision2D collision2D)
     {
+        if (state != State.Normal)
+        {
+            return;
+        }
         if (!collision2D.gameObject.TryGetComponent(out LandingPad landingPad))
         {
+
             Debug.Log("Crash on the Terrain!");
             OnLanded?.Invoke(this, new OnLandedEventArgs
             {
@@ -228,6 +237,8 @@ public class Lander : MonoBehaviour
     {
         return landerRigidbody2D.linearVelocityX;
     }
+
+
 
     public float GetSpeedY()
     {

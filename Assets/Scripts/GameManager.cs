@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     //单例模式
     public static GameManager Instance { get; private set; }
 
-    [SerializeField] private int levelNumber;
+    private static int levelNumber = 1;
     [SerializeField] private List<GameLevel> gameLevelList;
+    [SerializeField] private CinemachineCamera cinemachineCamera;
 
     private int score;
     private float time;
@@ -41,6 +44,13 @@ public class GameManager : MonoBehaviour
     private void Lander_OnStateChanged(object sender, Lander.OnStateChangedEventArgs e)
     {
         isTimerActive = e.state == Lander.State.Normal;
+
+        if (e.state == Lander.State.Normal)
+        {
+            cinemachineCamera.Target.TrackingTarget = Lander.Instance.transform;
+            CinemachineCameraZoom2D.Instance.SetNormalOrthographicSize();
+
+        }
     }
 
     private void Lander_OnLanded(object sender, Lander.OnLandedEventArgs e)
@@ -67,11 +77,23 @@ public class GameManager : MonoBehaviour
             {
                 GameLevel spawnedGameLevel = Instantiate(gameLevel, Vector3.zero, Quaternion.identity);
                 Lander.Instance.transform.position = spawnedGameLevel.GetLanderStartPosion();
+                cinemachineCamera.Target.TrackingTarget = spawnedGameLevel.GetCameraStartTargetTransform();
+                CinemachineCameraZoom2D.Instance.SetTargetOrthographicSize(spawnedGameLevel.GetZoomedOutOrthographicSize());
             }
         }
     }
 
 
+    public void GoToNextLevel()
+    {
+        levelNumber++;
+        SceneManager.LoadScene(0);
+    }
+
+    public void RetryLevel()
+    {
+        SceneManager.LoadScene(0);
+    }
 
 
 
@@ -84,5 +106,11 @@ public class GameManager : MonoBehaviour
     {
         return time;
     }
+    public int GetLevelNumber()
+    {
+        return levelNumber;
+    }
+
+
 
 }
