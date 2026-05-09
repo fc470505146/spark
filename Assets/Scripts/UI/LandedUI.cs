@@ -39,7 +39,7 @@ public class LandedUI : MonoBehaviour
                 nextButtonClickAction = GameManager.Instance.GoToNextLevel;
                 break;
             default:
-                titleTextMesh.text = "<color=#ff0000>撞毁</color>";
+                titleTextMesh.text = "<color=#ff0000>爆炸</color>";
                 nextButtonTextMesh.text = "重新开始";
                 nextButtonClickAction = GameManager.Instance.RetryLevel;
                 break;

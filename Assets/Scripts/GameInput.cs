@@ -1,10 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour
 {
     public static GameInput Instance { get; private set; }
+    public event EventHandler OnMenuButtonPressed;
     private InputActions inputActions;
     private void Awake()
     {
@@ -17,6 +19,13 @@ public class GameInput : MonoBehaviour
         Instance = this;
         inputActions = new InputActions();
         inputActions.Enable();
+
+        inputActions.Player.Menu.performed += Menu_performed;
+    }
+
+    private void Menu_performed(InputAction.CallbackContext context)
+    {
+        OnMenuButtonPressed?.Invoke(this, EventArgs.Empty);
     }
 
     public bool IsUpActionPressed()
@@ -33,7 +42,7 @@ public class GameInput : MonoBehaviour
     {
         return inputActions.Player.LanderLeft.IsPressed();
     }
-    
+
     public Vector2 GetMovementInputVector2()
     {
         return inputActions.Player.Movement.ReadValue<Vector2>();

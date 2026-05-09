@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     private static int levelNumber = 1;
+    public event EventHandler OnGamePaused;
+    public event EventHandler OnGameUnpaused;
     [SerializeField] private List<GameLevel> gameLevelList;
     [SerializeField] private CinemachineCamera cinemachineCamera;
 
@@ -37,8 +39,27 @@ public class GameManager : MonoBehaviour
         Lander.Instance.OnCoinPickup += Lander_OnCoinPickup;
         Lander.Instance.OnLanded += Lander_OnLanded;
         Lander.Instance.OnStateChanged += Lander_OnStateChanged;
+        GameInput.Instance.OnMenuButtonPressed += GameInput_OnMenuButtonPressed;
 
         LoadCurrentLevel();
+    }
+
+    private void GameInput_OnMenuButtonPressed(object sender, EventArgs e)
+    {
+        PauseUnpauseGame();
+    }
+
+    private void PauseUnpauseGame()
+    {
+        if (Time.timeScale == 1f)
+        {
+            PauseGame();
+        }
+        else
+        {
+            UnPauseGame();
+        }
+
     }
 
     private void Lander_OnStateChanged(object sender, Lander.OnStateChangedEventArgs e)
@@ -87,14 +108,24 @@ public class GameManager : MonoBehaviour
     public void GoToNextLevel()
     {
         levelNumber++;
-        SceneManager.LoadScene(0);
+        SceneLoader.LoadScene(SceneLoader.Scene.GameScene);
     }
 
     public void RetryLevel()
     {
-        SceneManager.LoadScene(0);
+        SceneLoader.LoadScene(SceneLoader.Scene.GameScene);
     }
 
+    public void PauseGame()
+    {
+        Time.timeScale = 0f;
+        OnGamePaused?.Invoke(this, EventArgs.Empty);
+    }
+    public void UnPauseGame()
+    {
+        Time.timeScale = 1f;
+        OnGameUnpaused?.Invoke(this, EventArgs.Empty);
+    }
 
 
     public int GetScore()
