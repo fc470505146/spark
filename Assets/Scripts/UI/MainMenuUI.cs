@@ -10,8 +10,10 @@ public class MainMenuUI : MonoBehaviour
 
     private void Awake()
     {
+        Time.timeScale = 1f;
         startButton.onClick.AddListener(() =>
         {
+            GameManager.ResetStaticData();
             SceneLoader.LoadScene(SceneLoader.Scene.GameScene);
         });
 
@@ -19,6 +21,10 @@ public class MainMenuUI : MonoBehaviour
         {
             Application.Quit();
         });
+    }
+    private void Start()
+    {
+        startButton.Select();
     }
 
 }
