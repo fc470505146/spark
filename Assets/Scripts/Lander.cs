@@ -33,7 +33,8 @@ public class Lander : MonoBehaviour
         Success,
         WrongLandingArea,
         TooSteepAngle,
-        TooFastLanding
+        TooFastLanding,
+        LosingWay
     }
     public enum State
     {
@@ -61,7 +62,6 @@ public class Lander : MonoBehaviour
         OnBeforeForce?.Invoke(this, EventArgs.Empty);
         switch (state)
         {
-            default:
             case State.WaitingToStart:
                 if (GameInput.Instance.IsUpActionPressed() || GameInput.Instance.IsRightActionPressed() || GameInput.Instance.IsLeftActionPressed() || GameInput.Instance.GetMovementInputVector2() != Vector2.zero
                 )
@@ -79,7 +79,7 @@ public class Lander : MonoBehaviour
                 if (GameInput.Instance.IsUpActionPressed() || GameInput.Instance.IsRightActionPressed() || GameInput.Instance.IsLeftActionPressed() || GameInput.Instance.GetMovementInputVector2() != Vector2.zero)
                 {
                     ConsumeFuel();
-                    OnMoving?.Invoke(this,EventArgs.Empty);
+                    OnMoving?.Invoke(this, EventArgs.Empty);
                 }
 
                 float gamepadDeadzone = .2f;
@@ -202,7 +202,7 @@ public class Lander : MonoBehaviour
             {
                 fuelAmount = fuelAmountMax;
             }
-            OnFuelPickup?.Invoke(this,EventArgs.Empty);
+            OnFuelPickup?.Invoke(this, EventArgs.Empty);
             fuelPickup.DestroySelf();
         }
 
@@ -210,6 +210,20 @@ public class Lander : MonoBehaviour
         {
             OnCoinPickup?.Invoke(this, EventArgs.Empty);
             coinPickup.DestroySelf();
+        }
+
+        if (collider2D.TryGetComponent(out LostBoundary lostBoundary))
+        {
+            OnLanded?.Invoke(this, new OnLandedEventArgs
+            {
+                landingType = LandingType.LosingWay,
+                landingSpeed = 0f,
+                dotVector = 0f,
+                scoreMultiplier = 0,
+                score = 0
+            });
+            SetState(State.GameOver);
+
         }
     }
 

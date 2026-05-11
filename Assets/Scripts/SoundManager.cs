@@ -22,6 +22,9 @@ public class SoundManager : MonoBehaviour
             case Lander.LandingType.Success:
                 AudioSource.PlayClipAtPoint(landingSuccessAudioClip, Camera.main.transform.position);
                 break;
+            
+            case Lander.LandingType.LosingWay:
+                break;
             default:
                 AudioSource.PlayClipAtPoint(crashAudioClip, Camera.main.transform.position);
                 break;

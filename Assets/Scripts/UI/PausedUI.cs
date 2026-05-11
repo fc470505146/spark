@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,11 @@ public class PausedUI : MonoBehaviour
 {
     [SerializeField] Button resumeButton;
     [SerializeField] Button mainMenuButton;
+    [SerializeField] Button joystickToggleButton;
+    [SerializeField] GameObject joystickRoot;
+    [SerializeField] TextMeshProUGUI joystickToggleButtonText;
+
+    private bool isJoystickVisible = false;
 
 
     private void Awake()
@@ -19,6 +25,12 @@ public class PausedUI : MonoBehaviour
         {
             SceneLoader.LoadScene(SceneLoader.Scene.MainMenuScene);
         });
+
+        joystickToggleButton.onClick.AddListener(() =>
+        {
+            isJoystickVisible = !isJoystickVisible;
+            ApplyJoystickVisibility();
+        });
     }
 
 
@@ -27,6 +39,7 @@ public class PausedUI : MonoBehaviour
         GameManager.Instance.OnGamePaused += GameManager_OnGamePaused;
         GameManager.Instance.OnGameUnpaused += GameManager_OnGameUnpaused;
 
+        ApplyJoystickVisibility();
         Hide();
     }
 
@@ -49,5 +62,11 @@ public class PausedUI : MonoBehaviour
     private void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    private void ApplyJoystickVisibility()
+    {
+        joystickRoot.SetActive(isJoystickVisible);
+        joystickToggleButtonText.text = isJoystickVisible ? "隐藏手柄" : "显示手柄";
     }
 }

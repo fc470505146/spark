@@ -38,6 +38,11 @@ public class LandedUI : MonoBehaviour
                 nextButtonTextMesh.text = "继续下一关";
                 nextButtonClickAction = GameManager.Instance.GoToNextLevel;
                 break;
+            case Lander.LandingType.LosingWay:
+                titleTextMesh.text = "<color=#ff0000>已迷航</color>";
+                nextButtonTextMesh.text = "重新开始";
+                nextButtonClickAction = GameManager.Instance.RetryLevel;
+                break;
             default:
                 titleTextMesh.text = "<color=#ff0000>爆炸</color>";
                 nextButtonTextMesh.text = "重新开始";
