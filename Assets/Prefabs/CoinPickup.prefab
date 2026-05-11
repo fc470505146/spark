@@ -82,6 +82,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 509d21c8361819d43b18e32cf1f94826, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visualTransform: {fileID: 8813537051998959133}
+  bobHeight: 0.12
+  bobSpeed: 3
+  flipSpeed: 5
+  minFlipScaleX: 0.35
 --- !u!1 &5189377775786611586
 GameObject:
   m_ObjectHideFlags: 0
