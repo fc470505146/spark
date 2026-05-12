@@ -76,7 +76,6 @@ public class GameManager : MonoBehaviour
         {
             cinemachineCamera.Target.TrackingTarget = Lander.Instance.transform;
             CinemachineCameraZoom2D.Instance.SetNormalOrthographicSize();
-
         }
     }
 

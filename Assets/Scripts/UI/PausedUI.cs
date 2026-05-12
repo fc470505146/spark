@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,10 +9,8 @@ public class PausedUI : MonoBehaviour
     [SerializeField] Button resumeButton;
     [SerializeField] Button mainMenuButton;
     [SerializeField] Button joystickToggleButton;
-    [SerializeField] GameObject joystickRoot;
     [SerializeField] TextMeshProUGUI joystickToggleButtonText;
 
-    private bool isJoystickVisible = false;
 
 
     private void Awake()
@@ -28,8 +27,7 @@ public class PausedUI : MonoBehaviour
 
         joystickToggleButton.onClick.AddListener(() =>
         {
-            isJoystickVisible = !isJoystickVisible;
-            ApplyJoystickVisibility();
+            SettingManager.Instance.NextTouchState();
         });
     }
 
@@ -38,9 +36,35 @@ public class PausedUI : MonoBehaviour
     {
         GameManager.Instance.OnGamePaused += GameManager_OnGamePaused;
         GameManager.Instance.OnGameUnpaused += GameManager_OnGameUnpaused;
+        SettingManager.Instance.OnTouchStateChanged += SettingManager_OnTouchStateChanged;
+        ApplyTouchState(SettingManager.Instance.GetTouchState());
 
-        ApplyJoystickVisibility();
         Hide();
+    }
+
+
+    private void SettingManager_OnTouchStateChanged(object sender, SettingManager.OnTouchStateChangedEvenArgs e)
+    {
+        ApplyTouchState(e.touchState);
+    }
+
+    private void ApplyTouchState(SettingManager.TouchState touchState)
+    {
+
+        switch (touchState)
+        {
+            case SettingManager.TouchState.PC:
+                joystickToggleButtonText.text = "方向按钮";
+                break;
+
+            case SettingManager.TouchState.ArrowButton:
+                joystickToggleButtonText.text = "圆盘控制";
+                break;
+
+            case SettingManager.TouchState.joystick:
+                joystickToggleButtonText.text = "隐藏触控";
+                break;
+        }
     }
 
     private void GameManager_OnGameUnpaused(object sender, EventArgs e)
@@ -64,9 +88,4 @@ public class PausedUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void ApplyJoystickVisibility()
-    {
-        joystickRoot.SetActive(isJoystickVisible);
-        joystickToggleButtonText.text = isJoystickVisible ? "隐藏手柄" : "显示手柄";
-    }
 }

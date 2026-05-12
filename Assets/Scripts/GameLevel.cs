@@ -3,16 +3,18 @@ using UnityEngine;
 public class GameLevel : MonoBehaviour
 {
     [SerializeField] private int levelNumber;
-    [SerializeField] private int zoomedOutOrthographicSize;
+    [SerializeField] private int pc_zoomedOutOrthographicSize;
+    [SerializeField] private int phone_zoomedOutOrthographicSize;
     [SerializeField] private Transform landerStartPositionTransform;
-    [SerializeField] private Transform cameraStartTargetTransform;
+    [SerializeField] private Transform pc_cameraStartTargetTransform;
+    [SerializeField] private Transform phone_cameraStartTargetTransform;
 
 
 
     public int GetLevelNumber()
     {
         return levelNumber;
-    }
+   }
 
     public Vector3 GetLanderStartPosion()
     {
@@ -21,12 +23,28 @@ public class GameLevel : MonoBehaviour
 
     public int GetZoomedOutOrthographicSize()
     {
-        return zoomedOutOrthographicSize;
+        if (Screen.width > Screen.height)
+        {
+            return pc_zoomedOutOrthographicSize;
+        }
+        else
+        {
+            return phone_zoomedOutOrthographicSize;
+        }
     }
 
 
     public Transform GetCameraStartTargetTransform()
     {
-        return cameraStartTargetTransform;
+        if (Screen.width > Screen.height)
+        {
+
+            return pc_cameraStartTargetTransform;
+        }
+        else
+        {
+            return phone_cameraStartTargetTransform;
+        }
+
     }
 }

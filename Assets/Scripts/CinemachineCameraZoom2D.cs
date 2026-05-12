@@ -5,7 +5,8 @@ public class CinemachineCameraZoom2D : MonoBehaviour
 {
     public static CinemachineCameraZoom2D Instance { get; private set; }
 
-    private const float NORMAL_ORTHOGRAPHIC_SIZE = 10f;
+    [SerializeField] private const float PC_NORMAL_ORTHOGRAPHIC_SIZE = 10f;
+    [SerializeField] private const float PHONE_NORMAL_ORTHOGRAPHIC_SIZE = 20f;
     [SerializeField] private CinemachineCamera cinemachineCamera;
 
     private void Awake()
@@ -18,7 +19,7 @@ public class CinemachineCameraZoom2D : MonoBehaviour
 
         Instance = this;
     }
-    [SerializeField]private float targetOrthographicSize = 10f;
+    [SerializeField] private float targetOrthographicSize = 10f;
 
     private void Update()
     {
@@ -34,7 +35,15 @@ public class CinemachineCameraZoom2D : MonoBehaviour
 
     public void SetNormalOrthographicSize()
     {
-        SetTargetOrthographicSize(NORMAL_ORTHOGRAPHIC_SIZE);
+        if (Screen.width > Screen.height)
+        {
+            SetTargetOrthographicSize(PC_NORMAL_ORTHOGRAPHIC_SIZE);
+        }
+        else
+        {
+            SetTargetOrthographicSize(PHONE_NORMAL_ORTHOGRAPHIC_SIZE);
+
+        }
     }
 
 
